@@ -15,6 +15,11 @@
  */
 #include QMK_KEYBOARD_H
 
+enum my_keycodes {
+  CUSTOM_COPY = SAFE_RANGE,
+  CUSTOM_PASTE
+};
+
 // Keyboard Layers
 enum layer_names {
     _QW,
@@ -32,7 +37,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,  KC_Q,     KC_W,    KC_E,       KC_R,    KC_T,    XXXXXXX, XXXXXXX, XXXXXXX, KC_Y,   KC_U,     KC_I,     KC_O,    KC_P,    KC_QUOT, \
     Z_LALT,  KC_A,     KC_S,    KC_D,       KC_F,    KC_G,    XXXXXXX, KC_UP,   XXXXXXX, KC_H,   KC_J,     KC_K,     KC_L,    KC_SCLN, KC_RALT,  \
     KC_LSFT, KC_Z,     KC_X,    KC_C,       KC_V,    KC_B,    KC_LEFT, KC_DOWN, KC_RGHT, KC_N,   KC_M,     KC_COMM,  KC_DOT,  KC_SLSH, KC_RSFT, \
-    KC_LCTL, TT(_FN), XXXXXXX, XXXXXXX,   KC_EQL,  KC_BSPC, KC_DEL,  XXXXXXX, KC_ENT,  KC_SPC, KC_MINUS, KC_GRAVE, KC_LBRC, KC_RBRC, XXXXXXX \
+    KC_LCTL, TT(_FN), CUSTOM_COPY, CUSTOM_PASTE,   KC_EQL,  KC_BSPC, KC_DEL,  XXXXXXX, KC_ENT,  KC_SPC, KC_MINUS, KC_GRAVE, KC_LBRC, KC_RBRC, KC_PSCR \
  ),
 
  [_FN] = LAYOUT_ortho_5x15( /* FUNCTION */
@@ -43,3 +48,30 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     XXXXXXX, TT(_FN), XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______, XXXXXXX,    _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX  \
  ),
 };
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case CUSTOM_COPY:
+      if (record->event.pressed) {
+        register_code(KC_LCTL);
+        register_code(KC_C);
+      } else {
+        unregister_code(KC_LCTL);
+        unregister_code(KC_C);
+      }
+      return true; 
+
+    case CUSTOM_PASTE:
+
+      if (record->event.pressed) { 
+        register_code(KC_LCTL);
+        register_code(KC_V);
+      } else {
+         unregister_code(KC_LCTL);
+         unregister_code(KC_V);
+      }
+      return true; 
+    default:
+      return true; 
+  }
+}
