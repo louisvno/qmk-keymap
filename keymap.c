@@ -25,15 +25,21 @@ enum layer_names {
     _QW,
     _FN,
 };
-
+enum {
+    TD_FAST_F12 = 0,
+};
 // Some short-cut aliases
 #define Z_LALT LALT_T(KC_ESC)
+
+qk_tap_dance_action_t tap_dance_actions[] = {
+    [TD_FAST_F12] = ACTION_TAP_DANCE_DOUBLE(KC_BSLS, KC_F12),
+};
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [_QW] = LAYOUT_ortho_5x15( /* QWERTY */
-    KC_ESC,  KC_1,     KC_2,    KC_3,       KC_4,    KC_5,    XXXXXXX, XXXXXXX, XXXXXXX, KC_6,   KC_7,     KC_8,     KC_9,    KC_0,    KC_BSLS, \
+    KC_ESC,  KC_1,     KC_2,    KC_3,       KC_4,    KC_5,    XXXXXXX, XXXXXXX, XXXXXXX, KC_6,   KC_7,     KC_8,     KC_9,    KC_0,    TD(TD_FAST_F12), \
     KC_TAB,  KC_Q,     KC_W,    KC_E,       KC_R,    KC_T,    XXXXXXX, XXXXXXX, XXXXXXX, KC_Y,   KC_U,     KC_I,     KC_O,    KC_P,    KC_QUOT, \
     Z_LALT,  KC_A,     KC_S,    KC_D,       KC_F,    KC_G,    XXXXXXX, KC_UP,   XXXXXXX, KC_H,   KC_J,     KC_K,     KC_L,    KC_SCLN, KC_RALT,  \
     KC_LSFT, KC_Z,     KC_X,    KC_C,       KC_V,    KC_B,    KC_LEFT, KC_DOWN, KC_RGHT, KC_N,   KC_M,     KC_COMM,  KC_DOT,  KC_SLSH, KC_RSFT, \
