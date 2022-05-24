@@ -30,20 +30,48 @@ enum {
 };
 // Some short-cut aliases
 #define Z_LALT LALT_T(KC_ESC)
+#define RGBLIGHT_SLEEP
 
 qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_FAST_F12] = ACTION_TAP_DANCE_DOUBLE(KC_BSLS, KC_F12),
 };
+// Light LEDs 9 & 10 in cyan when keyboard layer 1 is active
+const rgblight_segment_t PROGMEM my_layer1_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {9, 2, HSV_CYAN}
+);
+// Light LEDs 11 & 12 in purple when keyboard layer 2 is active
+const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {10, 4, HSV_RED}
+);
 
+const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+    my_layer1_layer,    // Overrides caps lock layer
+    my_layer2_layer    // Overrides other layers
+);
+
+layer_state_t default_layer_state_set_user(layer_state_t state) {
+    rgblight_set_layer_state(0, layer_state_cmp(state, _QW));
+    return state;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    rgblight_set_layer_state(1, layer_state_cmp(state, _FN));
+    return state;
+}
+
+void keyboard_post_init_user(void) {
+    // Enable the LED layers
+    rgblight_layers = my_rgb_layers;
+}
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [_QW] = LAYOUT_ortho_5x15( /* QWERTY */
     KC_ESC,  KC_1,     KC_2,    KC_3,       KC_4,    KC_5,    XXXXXXX, XXXXXXX, XXXXXXX, KC_6,   KC_7,     KC_8,     KC_9,    KC_0,    TD(TD_FAST_F12), \
     KC_TAB,  KC_Q,     KC_W,    KC_E,       KC_R,    KC_T,    XXXXXXX, XXXXXXX, XXXXXXX, KC_Y,   KC_U,     KC_I,     KC_O,    KC_P,    KC_QUOT, \
-    Z_LALT,  KC_A,     KC_S,    KC_D,       KC_F,    KC_G,    XXXXXXX, KC_UP,   XXXXXXX, KC_H,   KC_J,     KC_K,     KC_L,    KC_SCLN, KC_RALT,  \
-    KC_LSFT, KC_Z,     KC_X,    KC_C,       KC_V,    KC_B,    KC_LEFT, KC_DOWN, KC_RGHT, KC_N,   KC_M,     KC_COMM,  KC_DOT,  KC_SLSH, KC_RSFT, \
-    KC_LCTL, TG(_FN), CUSTOM_COPY, CUSTOM_PASTE,   KC_EQL,  KC_BSPC, KC_DEL,  XXXXXXX, KC_ENT,  KC_SPC, KC_MINUS, KC_GRAVE, KC_LBRC, KC_RBRC, KC_PSCR \
+    Z_LALT,  KC_A,     KC_S,    KC_D,       KC_F,    KC_G,    XXXXXXX, XXXXXXX, XXXXXXX, KC_H,   KC_J,     KC_K,     KC_L,    KC_SCLN, KC_RALT,  \
+    KC_LSFT, KC_Z,     KC_X,    KC_C,       KC_V,    KC_B,    XXXXXXX, XXXXXXX, XXXXXXX, KC_N,   KC_M,     KC_COMM,  KC_DOT,  KC_SLSH, KC_RSFT, \
+    KC_LCTL, XXXXXXX, CUSTOM_COPY, CUSTOM_PASTE,     TG(_FN), KC_BSPC, KC_DEL,  KC_EQL, KC_ENT,  KC_SPC, KC_MINUS, KC_GRAVE, KC_LBRC, KC_RBRC, KC_PSCR \
  ),
 
  [_FN] = LAYOUT_ortho_5x15( /* FUNCTION */
@@ -51,7 +79,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_UP, XXXXXXX, XXXXXXX, XXXXXXX, \
     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT, XXXXXXX, XXXXXXX, \
     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_HOME, KC_END, XXXXXXX, XXXXXXX, XXXXXXX, \
-    XXXXXXX, TG(_FN), _______, _______, XXXXXXX, _______, _______, XXXXXXX, _______, _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX  \
+    XXXXXXX, XXXXXXX, _______, _______, TG(_FN), _______, _______, XXXXXXX, _______, _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX  \
  ),
 };
 
